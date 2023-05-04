@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String
+  password String
+  dailyIntakeGoal Int?
+  dailyIntakes DailyIntake[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DailyIntake {
+  id Int @id @default(autoincrement())
+  date DateTime
+  totalCalories Float
+  totalProtein Float
+  totalFat Float
+  totalCarbs Float
+  totalSugar Float
+  totalFiber Float
+  totalSodium Float
+  meals Meal[]
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+model Meal {
+  id Int @id @default(autoincrement())
+  date DateTime
+  foodItems FoodItem[]
+  dailyIntake DailyIntake @relation(fields: [dailyIntakeId], references: [id])
+  dailyIntakeId Int 
+}
+
+model FoodItem {
+  id Int @id @default(autoincrement())
+  name String
+  calories Float
+  protein Float
+  fat Float
+  carbs Float
+  sugar Float
+  fiber Float
+  sodium Float
+  servingSize Float
+  meal Meal @relation(fields: [mealId], references: [id])
+  mealId Int
+}
